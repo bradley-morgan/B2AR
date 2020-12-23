@@ -1,0 +1,61 @@
+program: Cross_Validation.py
+model: xgboost
+description: XGBoost Sweep Test
+method: bayes
+metric:
+  goal: maximize
+  name: mean_mcc
+name: XGBoost Cross Validation Round 1
+parameters:
+  booster:
+    values:
+    - gbtree
+    - dart
+  colsample_bytree:
+    distribution: uniform
+    max: 1
+    min: 0
+  eta:
+    distribution: uniform
+    max: 1
+    min: 0.3
+  gamma:
+    distribution: uniform
+    max: 10
+    min: 0
+  learning_rate:
+    distribution: uniform
+    max: 0.1
+    min: 0.01
+  max_delta_step:
+    distribution: int_uniform
+    max: 10
+    min: 1
+  max_depth:
+    distribution: int_uniform
+    max: 20
+    min: 3
+  min_child_weight:
+    distribution: uniform
+    max: 10
+    min: 0
+  n_estimators:
+    distribution: int_uniform
+    max: 1500
+    min: 10
+  reg_alpha:
+    distribution: uniform
+    max: 10
+    min: 0
+  reg_lambda:
+    distribution: uniform
+    max: 10
+    min: 0
+  scale_pos_weight:
+    distribution: int_uniform
+    max: 10
+    min: 1
+  subsample:
+    distribution: uniform
+    max: 1
+    min: 0.5

@@ -1,0 +1,59 @@
+orch:
+  src: placeholder
+  project_name: placeholder
+  cloud:
+    enable_logging: True
+    api_key: placeholder
+  test_mode: True
+  parallelisation:
+    selection:
+      enable: True
+
+    variance:
+      enable: True
+
+    validation:
+      enable: True
+
+    optimization:
+      enable: True
+      sweep_agents: 2
+
+data:
+  test_size: 0.02
+  transforms:
+    placeholder: placeholder
+
+variance:
+  test_repeats: 3 5 10 30
+  n_samples: 1.0
+  time:
+    units: mins
+    threshold: None
+  std_threshold: None
+  return: lowest-standard-error
+
+repeats:
+  precision:
+    min: 0.01
+    max: 0.001
+  n_samples: 1.0
+  return: lowest-precision
+
+validation:
+  k_folds: 10
+  n_repeats: 3
+
+selection:
+  sweep_src: ./sweep_configs
+
+uncertainty:
+   n_repeats: auto
+   n_samples: 1.0
+
+inspection:
+  correlation: True
+
+
+
+

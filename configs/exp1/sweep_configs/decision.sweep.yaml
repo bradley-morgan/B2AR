@@ -1,0 +1,36 @@
+program: cross_validation.py
+model: decision tree
+description: Decision Tree Sweep Test
+method: bayes
+metric:
+  goal: maximize
+  name: mean_mcc
+name: Decision Tree Round 6
+parameters:
+  class_weight:
+    values:
+      - balanced
+  criterion:
+    values:
+      - gini
+      - entropy
+  max_depth:
+    distribution: int_uniform
+    max: 10
+    min: 3
+  max_features:
+    distribution: int_uniform
+    max: 40
+    min: 1
+  min_samples_leaf:
+    distribution: int_uniform
+    max: 1000
+    min: 1
+  min_samples_split:
+    distribution: int_uniform
+    max: 1000
+    min: 1
+  splitter:
+    values:
+      - best
+      - random
