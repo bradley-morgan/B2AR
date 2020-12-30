@@ -1,6 +1,25 @@
-import os, stat
+import os
 import yaml
+
 # ==================================== TODO FUNCTIONS ==================================================================
+
+
+def get_cpus(required_cores, max_cores=-1):
+    total_cores = os.cpu_count()
+
+    if max_cores == -1:
+        return total_cores
+
+    elif required_cores <= max_cores:
+        return required_cores
+
+    elif required_cores > max_cores:
+
+        if max_cores <= total_cores:
+            return max_cores
+        else:
+            raise OSError(f'The number of max cores to use {max_cores} exceeds the total availble cores {total_cores}'
+                          f'on this machine')
 
 
 def compile_yaml(path):
@@ -9,32 +28,4 @@ def compile_yaml(path):
     return config
 
 # ==================================== TODO CLASSES ====================================================================
-class Orchestrator:
 
-    def __init__(self, config_src):
-
-        if not os.path.isdir(config_src):
-            raise NotADirectoryError(f'Provided Directories are not valid: \n'
-                                     f'config src {config_src}')
-
-        self.config_src = config_src
-        self.config = None
-
-        self.compile_configurations()
-
-    def compile_configurations(self):
-        # check existence of config
-        files = os.listdir(self.config_src)
-        files = [f for f in files if f.endswith('.config.yaml')]
-
-        if len(files) == 0:
-            raise FileNotFoundError(f'No .config.yaml files found in {self.config_src}\n please provide a valid config')
-
-        elif len(files) > 1:
-            raise ValueError(f'Please provide only 1 .config.yaml file in {self.config_src}')
-
-        files = os.path.join(self.config_src, files[0])
-        self.config_src = compile_yaml(files)
-
-    def run(self):
-        pass

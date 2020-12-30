@@ -1,55 +1,97 @@
 orch:
-  src: placeholder
+  src: ./data/filtered
   project_name: placeholder
   cloud:
-    enable_logging: True
     api_key: placeholder
   test_mode: True
-  parallelisation:
-    selection:
-      enable: True
+  max_cores: 4
+  max_gpus: 1
+  phases:
+    phase3:
+      active: True
+      inputs: None
+    phase4:
+      active: True
+      inputs: None
+    phase2:
+      active: True
+      inputs:
+        model: 'decision tree'
 
-    variance:
-      enable: True
-
-    validation:
-      enable: True
-
-    optimization:
-      enable: True
-      sweep_agents: 2
-
-data:
+preprocessing:
+  target_name: 'action'
   test_size: 0.02
+  transform_src: transforms
   transforms:
-    placeholder: placeholder
+    clean_features:
+      exceptions:
+        - Action
+        - Ligand_Pose
+        - Ligand_Pose2
+
+    merge:
+      merge_all: True
+      merge_all_name: merged-B2in-Z-R
+      groups:
+        - !!python/tuple [B2in-ant, B2in-ag]
+        - !!python/tuple [R-ant, R-ag]
+        - !!python/tuple [Z-ant, Z-ag]
+      group_names:
+        - b2in
+        - R
+        - Z
+
+    remove_features:
+      search_params:
+        - Clash
+        - Proximal
+        - Ligand_Pose
+        - Ligand_Pose2
+
+    change_nans:
+      value: 0
+
+  output: merged-B2in-Z-R
+
+selection:
+  sweep_src: ./sweep_configs
+  time_threshold: 4
+  performance_threshold: 0.85
+  parallelisation: multiprocessing
+  output: best_performance
 
 variance:
-  test_repeats: 3 5 10 30
+  test_repeats:
+    - 3
+    - 5
+    - 10
+    - 20
+
   n_samples: 1.0
   time:
     units: mins
     threshold: None
   std_threshold: None
-  return: lowest-standard-error
+  output: lowest-standard-error
+  parallelisation: single
 
 repeats:
   precision:
     min: 0.01
     max: 0.001
   n_samples: 1.0
-  return: lowest-precision
+  output: lowest-precision
+  parallelisation: single
 
 validation:
   k_folds: 10
-  n_repeats: 3
-
-selection:
-  sweep_src: ./sweep_configs
+  n_repeats: auto
+  parallelisation: single
 
 uncertainty:
    n_repeats: auto
    n_samples: 1.0
+   parallelisation: single
 
 inspection:
   correlation: True

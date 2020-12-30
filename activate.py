@@ -1,4 +1,4 @@
-import tools.orchestration_tools as o_tools
+from orchestrator import Orchestrator
 import argparse
 
 parser = argparse.ArgumentParser(description='placeholder description')
@@ -6,4 +6,5 @@ parser.add_argument('--config_src', '-csrc', type=str, default='./configs/exp1',
 
 args = parser.parse_args()
 
-orchestrator = o_tools.Orchestrator(config_src=args.config_src)
+orchestrator = Orchestrator(config_src=args.config_src)
+orchestrator.execute()

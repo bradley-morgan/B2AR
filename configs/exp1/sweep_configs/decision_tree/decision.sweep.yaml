@@ -1,11 +1,11 @@
 program: cross_validation.py
-model: decision tree
+model: decision_tree
 description: Decision Tree Sweep Test
 method: bayes
 metric:
   goal: maximize
   name: mean_mcc
-name: Decision Tree Round 6
+name: Decision Tree
 parameters:
   class_weight:
     values:
