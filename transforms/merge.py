@@ -7,8 +7,8 @@ class Transform:
     def __init__(self, config):
         self.config = config
 
-    def __call__(self, data: DataService):
-        datasets = data.datasets
+    def __call__(self, dataService: DataService):
+        datasets = dataService.datasets
 
         merge_all = self.config[rcp.merge_all]
         merge_all_name = self.config[rcp.merge_all_name]
@@ -20,24 +20,24 @@ class Transform:
             for group, group_name in zip(groups, group_names):
                 group = list(group)
                 f_key = group.pop()
-                merged_df = datasets[f_key]["data"]
+                merged_df = datasets[f_key][rcp.data]
 
                 for df_name in group:
-                    data = datasets[df_name]["data"]
-                    merged_df = merged_df.append(data, sort=False)
+                    subset = datasets[df_name][rcp.data]
+                    merged_df = merged_df.append(subset, sort=False)
 
-                out_dataset[group_name] = {'data': merged_df}
+                out_dataset[group_name] = {rcp.data: merged_df}
         else:
             out_dataset = datasets
 
         if merge_all:
             j_key = group_names.pop()
-            merged_df = out_dataset[j_key]["data"]
+            merged_df = out_dataset[j_key][rcp.data]
             for name in group_names:
-                data = out_dataset[name]["data"]
-                merged_df = merged_df.append(data, sort=False,)
+                subset = out_dataset[name][rcp.data]
+                merged_df = merged_df.append(subset, sort=False,)
 
-            out_dataset[merge_all_name] = {'data': merged_df}
+            out_dataset[merge_all_name] = {rcp.data: merged_df}
 
-        data.datasets = out_dataset
-        return data
+        dataService.datasets = out_dataset
+        return dataService

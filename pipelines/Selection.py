@@ -102,7 +102,7 @@ class ModelSelectionPipe:
 
     def execute(self, data: DataService):
 
-        self.data = data
+        self.data = data[rcp.data]
         parallelisation = self.config[rcp.selection][rcp.parallelisation]
         if parallelisation.lower() == rcp.single:
             for exe_config in self.execution_chain:

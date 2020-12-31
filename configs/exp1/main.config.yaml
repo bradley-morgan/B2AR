@@ -19,10 +19,26 @@ orch:
         model: 'decision tree'
 
 preprocessing:
-  target_name: 'action'
+  target_name: 'Action'
   test_size: 0.02
   transform_src: transforms
   transforms:
+    apply_item:
+      item1:
+        name: 'Action'
+        item: 1
+        apply_to:
+          - R-ag
+          - B2in-ag
+          - Z-ag
+      item2:
+        name: 'Action'
+        item: 0
+        apply_to:
+          - R-ant
+          - B2in-ant
+          - Z-ant
+
     clean_features:
       exceptions:
         - Action
@@ -50,6 +66,7 @@ preprocessing:
 
     change_nans:
       value: 0
+
 
   output: merged-B2in-Z-R
 

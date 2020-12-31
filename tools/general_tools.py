@@ -103,5 +103,12 @@ required_config_params = Obj(
     merge_all='merge_all',
     merge_all_name='merge_all_name',
     groups='groups',
-    group_names='group_names'
+    group_names='group_names',
+    search_params='search_params',
+    remove_feature='remove_features',
+    change_nans='change_nans',
+    value='value',
+    name='name',
+    apply_to='apply_to',
+    item='item'
 )
