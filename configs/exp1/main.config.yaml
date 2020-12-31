@@ -1,0 +1,118 @@
+orch:
+  src: ./data/filtered
+  project_name: placeholder
+  cloud:
+    api_key: placeholder
+  test_mode: True
+  max_cores: 4
+  max_gpus: 1
+  phases:
+    phase3:
+      active: True
+      inputs: None
+    phase4:
+      active: True
+      inputs: None
+    phase2:
+      active: True
+      inputs:
+        model: 'decision tree'
+
+preprocessing:
+  target_name: 'Action'
+  test_size: 0.02
+  transform_src: transforms
+  transforms:
+    apply_item:
+      item1:
+        name: 'Action'
+        item: 1
+        apply_to:
+          - R-ag
+          - B2in-ag
+          - Z-ag
+      item2:
+        name: 'Action'
+        item: 0
+        apply_to:
+          - R-ant
+          - B2in-ant
+          - Z-ant
+
+    clean_features:
+      exceptions:
+        - Action
+        - Ligand_Pose
+        - Ligand_Pose2
+
+    merge:
+      merge_all: True
+      merge_all_name: merged-B2in-Z-R
+      groups:
+        - !!python/tuple [B2in-ant, B2in-ag]
+        - !!python/tuple [R-ant, R-ag]
+        - !!python/tuple [Z-ant, Z-ag]
+      group_names:
+        - b2in
+        - R
+        - Z
+
+    remove_features:
+      search_params:
+        - Clash
+        - Proximal
+        - Ligand_Pose
+        - Ligand_Pose2
+
+    change_nans:
+      value: 0
+
+
+  output: merged-B2in-Z-R
+
+selection:
+  sweep_src: ./sweep_configs
+  time_threshold: 4
+  performance_threshold: 0.85
+  parallelisation: multiprocessing
+  output: best_performance
+
+variance:
+  test_repeats:
+    - 3
+    - 5
+    - 10
+    - 20
+
+  n_samples: 1.0
+  time:
+    units: mins
+    threshold: None
+  std_threshold: None
+  output: lowest-standard-error
+  parallelisation: single
+
+repeats:
+  precision:
+    min: 0.01
+    max: 0.001
+  n_samples: 1.0
+  output: lowest-precision
+  parallelisation: single
+
+validation:
+  k_folds: 10
+  n_repeats: auto
+  parallelisation: single
+
+uncertainty:
+   n_repeats: auto
+   n_samples: 1.0
+   parallelisation: single
+
+inspection:
+  correlation: True
+
+
+
+
