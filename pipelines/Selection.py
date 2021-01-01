@@ -1,9 +1,12 @@
 import os
+import pandas as pd
 import tools.orchestration_tools as o_tools
 import tools.model_tools as m_tools
 from multiprocessing import Pool
 from tools.general_tools import Obj, required_config_params as rcp
 from services.Data import DataService
+from pipes.OptimPipe import OptimPipe
+
 
 class ModelSelectionPipe:
 
@@ -77,7 +80,8 @@ class ModelSelectionPipe:
             if parameters is None:
                 raise KeyError(f'Sweep configs must specify a non-empty parameter value')
 
-            model = m_tools.make_model(model_name, default_config)
+            test_mode = self.config[rcp.orch][rcp.test_mode]
+            model = m_tools.MakeModel(model_name, default_config, test_mode)
             chain.append(
                 Obj(
                     id=idx,
@@ -85,7 +89,7 @@ class ModelSelectionPipe:
                     sweep_config=sweep_config,
                     default_config=default_config,
                     output=None,
-                    error=None
+                    error=None,
                 )
             )
 
@@ -100,53 +104,58 @@ class ModelSelectionPipe:
         self.execution_chain[p_out.id].status = p_out.status
         self.execution_chain[p_out.id].error = p_out.error
 
-    def execute(self, data: DataService):
-
+    def execute(self, data: pd.DataFrame):
         self.data = data[rcp.data]
-        parallelisation = self.config[rcp.selection][rcp.parallelisation]
-        if parallelisation.lower() == rcp.single:
-            for exe_config in self.execution_chain:
-                p_out = self.pipe(exe_config)
-                self.__update_exe_chain__(p_out)
 
-        elif parallelisation.lower() == rcp.multiprocessing:
-            # Distribute processing across cores
-            cpus = o_tools.get_cpus(required_cores=len(self.execution_chain), max_cores=self.max_cores)
-            with Pool(cpus) as pool:
-                pipes = pool.map(self.pipe, self.execution_chain)
-                for p_out in pipes:
-                    self.__update_exe_chain__(p_out)
+        # Each pipe needs to parallise the execution chain, join the results and the return the new pipeline
+        self.execution_chain = self.execute_repeat_estimation()
+        self.execution_chain = self.execute_optimization()
 
         # TODO implement Ray or Dask Engine
         #TODO output in standardised way
 
-    def pipe(self, config):
+    def execute_repeat_estimation(self):
 
-        import time
-        try:
-            if config.id == 1:
-                raise ValueError()
-            time.sleep(1)
-            return Obj(
-                id=config.id,
-                output='placeholder',
-                status='success',
-                error=None
-            )
-
-        except Exception as e:
-            return Obj(
-                id=config.id,
-                output=None,
-                status='Failure',
-                error=e
-            )
+        return self.execution_chain
         # TODO variance estimation
         # TODO repeats estimation
         # TODO optimisation
         # TODO cross validation
 
+    def execute_optimization(self):
 
+        parallelisation = self.config[rcp.selection][rcp.parallelisation]
+        project = self.config[rcp.orch][rcp.project_name]
+        k_folds = self.config[rcp.validation][rcp.k_folds]
+        n_repeats = self.config[rcp.validation][rcp.n_repeats]
+
+        if parallelisation.lower() == rcp.single:
+            for process in self.execution_chain:
+                p_out = OptimPipe(self.data, k_folds, n_repeats, process.sweep_config, process.model, project).run()
+                self.__update_exe_chain__(p_out)
+
+        elif parallelisation.lower() == rcp.multiprocessing:
+            pass
+
+
+
+
+
+
+
+
+# if parallelisation.lower() == rcp.single:
+#     for exe_config in self.execution_chain:
+#         p_out = self.pipe(exe_config)
+#         self.__update_exe_chain__(p_out)
+#
+# elif parallelisation.lower() == rcp.multiprocessing:
+#     # Distribute processing across cores
+#     cpus = o_tools.get_cpus(required_cores=len(self.execution_chain), max_cores=self.max_cores)
+#     with Pool(cpus) as pool:
+#         pipes = pool.map(self.pipe, self.execution_chain)
+#         for p_out in pipes:
+#             self.__update_exe_chain__(p_out)
 if __name__ == '__main__':
     import tools.general_tools as g_tools
 

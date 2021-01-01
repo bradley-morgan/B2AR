@@ -3,13 +3,14 @@ import tools.general_tools as g_tools
 from services.Data import DataService
 import os, importlib
 
+
 class DataPreprocessingPipe:
 
     def __init__(self, config: Obj):
         self.config = config
         self.transform_src = g_tools.path(self.config[rcp.preprocessing][rcp.transform_src])
         self.execution_chain = []
-        self.transform_src = g_tools.path('transforms')
+        self.transform_src = g_tools.path('pipes/transforms')
 
         self.compile_execution_chain()
 
@@ -28,7 +29,7 @@ class DataPreprocessingPipe:
         for transform in user_transforms.keys():
             if f'{transform}.py' in transform_files:
 
-                plugin = importlib.import_module(f'transforms.{transform}')
+                plugin = importlib.import_module(f'pipes.transforms.{transform}')
                 plugin = plugin.Transform(user_transforms[transform])
                 transforms.append(plugin)
 

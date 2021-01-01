@@ -74,7 +74,7 @@ selection:
   sweep_src: ./sweep_configs
   time_threshold: 4
   performance_threshold: 0.85
-  parallelisation: multiprocessing
+  parallelisation: single
   output: best_performance
 
 variance:
