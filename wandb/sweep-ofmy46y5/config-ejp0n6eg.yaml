@@ -1,0 +1,16 @@
+wandb_version: 1
+
+class_weight:
+  value: balanced
+criterion:
+  value: entropy
+max_depth:
+  value: 6
+max_features:
+  value: 16
+min_samples_leaf:
+  value: 499
+min_samples_split:
+  value: 137
+splitter:
+  value: best

@@ -2,6 +2,7 @@ from tools.general_tools import Obj, required_config_params as rcp
 from pipelines.Selection import ModelSelectionPipe
 from pipelines.Data import DataPreprocessingPipe
 import os, tools.orchestration_tools as o_tools
+import wandb
 
 class Orchestrator:
 
@@ -14,11 +15,16 @@ class Orchestrator:
                                      f'config src {config_src}')
 
         self.config_src = config_src
-        self.config = None
+        self.config = {}
         self.execution_chain = Obj()
 
         self.compile_configurations()
         self.compile_execution_chain()
+
+        # login to wandb
+        os.environ['WANDB_API_KEY'] = self.config[rcp.orch][rcp.cloud][rcp.api_key]
+        os.environ['WANDB_SILENT'] = 'true'
+
 
     def compile_execution_chain(self):
         # validate phase 1 parameters
@@ -91,7 +97,7 @@ class Orchestrator:
                 self.execution_chain.phase1.output = phase_obj.pipe.execute()
 
             elif phase == rcp.phase2:
-                data = self.execution_chain.phase1.output.datasets[self.config[rcp.preprocessing][rcp.output]]
+                data = self.execution_chain.phase1.output.provide(self.config[rcp.preprocessing][rcp.output], 'int64')
                 self.execution_chain.phase2.output = phase_obj.pipe.execute(data)
 
             elif phase == rcp.phase3:

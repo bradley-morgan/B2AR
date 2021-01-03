@@ -39,8 +39,8 @@ class DataService:
                 self.datasets[dataset_name] = {rcp.data: data}
 
     def provide(self, name, dtype):
-        y_name = self.config[rcp.data][rcp.target_name]
-        dataFrame = self.datasets[name]["data"]
+        y_name = self.config[rcp.preprocessing][rcp.target_name]
+        dataFrame = self.datasets[name][rcp.data]
         y = dataFrame[y_name].to_numpy()
         x = dataFrame.drop(y_name, axis=1)
         feature_names = x.columns.to_numpy()

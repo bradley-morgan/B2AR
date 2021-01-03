@@ -15,21 +15,30 @@ class OptimPipe:
         self.model = model
         self.project = project
         self.sweep_config = sweep_config
+        self.run_obj = None
 
     def process(self):
         # TODO Init run with sweep config
-        run = wandb.init(
+        run_obj = wandb.init(
             config=self.model.params,
             project=self.project
         )
+        self.run_obj = run_obj
+        config = wandb.config
+        self.model.params = config
 
         # TODO run cross validation
-        cross_val = CrossValService(self.k_folds, self.n_repeats, self.data, self.model)
+        cross_val = CrossValService(self.k_folds, 1, self.data, self.model)
+        cross_val.run()
         results = cross_val.get_descriptives()
         # Log target metric to cloud
-        run.log({'mean_mcc': results.mean})
-        # save run name
+        run_obj.log({'mean_mcc': results.mean})
+        # save run name to file
+
+    def terminate(self):
+        self.run_obj.finish()
 
     def run(self):
         sweep_id = wandb.sweep(sweep=self.sweep_config, project=self.project)
         wandb.agent(sweep_id, function=self.process)
+

@@ -2,10 +2,11 @@ import os
 import pandas as pd
 import tools.orchestration_tools as o_tools
 import tools.model_tools as m_tools
-from multiprocessing import Pool
+from multiprocessing import Process, freeze_support
 from tools.general_tools import Obj, required_config_params as rcp
 from services.Data import DataService
 from pipes.OptimPipe import OptimPipe
+import wandb
 
 
 class ModelSelectionPipe:
@@ -105,7 +106,7 @@ class ModelSelectionPipe:
         self.execution_chain[p_out.id].error = p_out.error
 
     def execute(self, data: pd.DataFrame):
-        self.data = data[rcp.data]
+        self.data = data
 
         # Each pipe needs to parallise the execution chain, join the results and the return the new pipeline
         self.execution_chain = self.execute_repeat_estimation()
@@ -130,37 +131,27 @@ class ModelSelectionPipe:
         n_repeats = self.config[rcp.validation][rcp.n_repeats]
 
         if parallelisation.lower() == rcp.single:
-            for process in self.execution_chain:
-                p_out = OptimPipe(self.data, k_folds, n_repeats, process.sweep_config, process.model, project).run()
+            for job in self.execution_chain:
+                p_out = OptimPipe(self.data, k_folds, n_repeats, job.sweep_config, job.model, project).run()
                 self.__update_exe_chain__(p_out)
 
         elif parallelisation.lower() == rcp.multiprocessing:
-            pass
+            import time
+            timeout = self.config[rcp.selection][rcp.timeout] * 3600
+            processes = []
+            start = []
+            for job in self.execution_chain:
+                pipe = OptimPipe(self.data, k_folds, n_repeats, job.sweep_config, job.model, project)
+                process = Process(target=pipe.run)
+                process.daemon = False
+                processes.append(process)
+                start.append(time.time())
+                process.start()
+                a = 0
 
+            for process, s in zip(processes, start):
+                process.join(timeout=timeout)
+                process.terminate()
+                end = time.time() - s
+                print(f'process timed out at: {end}')
 
-
-
-
-
-
-
-# if parallelisation.lower() == rcp.single:
-#     for exe_config in self.execution_chain:
-#         p_out = self.pipe(exe_config)
-#         self.__update_exe_chain__(p_out)
-#
-# elif parallelisation.lower() == rcp.multiprocessing:
-#     # Distribute processing across cores
-#     cpus = o_tools.get_cpus(required_cores=len(self.execution_chain), max_cores=self.max_cores)
-#     with Pool(cpus) as pool:
-#         pipes = pool.map(self.pipe, self.execution_chain)
-#         for p_out in pipes:
-#             self.__update_exe_chain__(p_out)
-if __name__ == '__main__':
-    import tools.general_tools as g_tools
-
-    config = o_tools.compile_yaml('../configs/exp1/main.config.yaml')
-    config = config['selection']
-    config['sweep_src'] = g_tools.path(os.path.join('./configs/exp1', config['sweep_src']))
-    m = ModelSelectionPipe(config, max_cores=4, max_gpus=1)
-    m.execute()

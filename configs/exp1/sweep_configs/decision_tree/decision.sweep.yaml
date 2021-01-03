@@ -5,7 +5,7 @@ method: bayes
 metric:
   goal: maximize
   name: mean_mcc
-name: Decision Tree
+name: Decision Tree 0
 parameters:
   class_weight:
     values:

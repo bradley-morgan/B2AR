@@ -1,0 +1,369 @@
+wandb_version: 1
+
+_callback:
+  desc: null
+  value: wandb.sdk.wandb_run.Run._config_callback
+_items:
+  desc: null
+  value:
+    _callback: wandb.sdk.wandb_run.Run._config_callback
+    _items:
+      _callback: wandb.sdk.wandb_run.Run._config_callback
+      _items:
+        _callback: wandb.sdk.wandb_run.Run._config_callback
+        _items:
+          _callback: wandb.sdk.wandb_run.Run._config_callback
+          _items:
+            _callback: wandb.sdk.wandb_run.Run._config_callback
+            _items:
+              _callback: wandb.sdk.wandb_run.Run._config_callback
+              _items:
+                _callback: wandb.sdk.wandb_run.Run._config_callback
+                _items:
+                  _callback: wandb.sdk.wandb_run.Run._config_callback
+                  _items:
+                    _callback: wandb.sdk.wandb_run.Run._config_callback
+                    _items:
+                      _callback: wandb.sdk.wandb_run.Run._config_callback
+                      _items:
+                        _callback: wandb.sdk.wandb_run.Run._config_callback
+                        _items:
+                          _callback: wandb.sdk.wandb_run.Run._config_callback
+                          _items:
+                            _callback: wandb.sdk.wandb_run.Run._config_callback
+                            _items:
+                              _callback: wandb.sdk.wandb_run.Run._config_callback
+                              _items:
+                                _callback: wandb.sdk.wandb_run.Run._config_callback
+                                _items:
+                                  _wandb:
+                                    cli_version: 0.10.12
+                                    framework: sklearn
+                                    is_jupyter_run: false
+                                    is_kaggle_kernel: false
+                                    python_version: 3.9.1
+                                  class_weight: balanced
+                                  criterion: gini
+                                  max_depth: 10
+                                  max_features: 8
+                                  min_samples_leaf: 414
+                                  min_samples_split: 728
+                                  splitter: random
+                                _locked: {}
+                                _settings: <wandb.sdk.wandb_settings.Settings object
+                                  at 0x00000203FFB1C400>
+                                _users: {}
+                                _users_cnt: 0
+                                _users_inv: {}
+                                _wandb:
+                                  cli_version: 0.10.12
+                                  framework: sklearn
+                                  is_jupyter_run: false
+                                  is_kaggle_kernel: false
+                                  python_version: 3.9.1
+                                class_weight: balanced
+                                criterion: entropy
+                                max_depth: 3
+                                max_features: 13
+                                min_samples_leaf: 806
+                                min_samples_split: 371
+                                splitter: random
+                              _locked: {}
+                              _settings: <wandb.sdk.wandb_settings.Settings object
+                                at 0x00000203FFC2ADC0>
+                              _users: {}
+                              _users_cnt: 0
+                              _users_inv: {}
+                              _wandb:
+                                cli_version: 0.10.12
+                                framework: sklearn
+                                is_jupyter_run: false
+                                is_kaggle_kernel: false
+                                python_version: 3.9.1
+                              class_weight: balanced
+                              criterion: gini
+                              max_depth: 3
+                              max_features: 30
+                              min_samples_leaf: 936
+                              min_samples_split: 166
+                              splitter: best
+                            _locked: {}
+                            _settings: <wandb.sdk.wandb_settings.Settings object at
+                              0x00000203800038E0>
+                            _users: {}
+                            _users_cnt: 0
+                            _users_inv: {}
+                            _wandb:
+                              cli_version: 0.10.12
+                              framework: sklearn
+                              is_jupyter_run: false
+                              is_kaggle_kernel: false
+                              python_version: 3.9.1
+                            class_weight: balanced
+                            criterion: entropy
+                            max_depth: 3
+                            max_features: 31
+                            min_samples_leaf: 132
+                            min_samples_split: 981
+                            splitter: best
+                          _locked: {}
+                          _settings: <wandb.sdk.wandb_settings.Settings object at
+                            0x00000203FFC242E0>
+                          _users: {}
+                          _users_cnt: 0
+                          _users_inv: {}
+                          _wandb:
+                            cli_version: 0.10.12
+                            framework: sklearn
+                            is_jupyter_run: false
+                            is_kaggle_kernel: false
+                            python_version: 3.9.1
+                          class_weight: balanced
+                          criterion: gini
+                          max_depth: 6
+                          max_features: 35
+                          min_samples_leaf: 278
+                          min_samples_split: 355
+                          splitter: random
+                        _locked: {}
+                        _settings: <wandb.sdk.wandb_settings.Settings object at 0x0000020380038E80>
+                        _users: {}
+                        _users_cnt: 0
+                        _users_inv: {}
+                        _wandb:
+                          cli_version: 0.10.12
+                          framework: sklearn
+                          is_jupyter_run: false
+                          is_kaggle_kernel: false
+                          python_version: 3.9.1
+                        class_weight: balanced
+                        criterion: gini
+                        max_depth: 6
+                        max_features: 30
+                        min_samples_leaf: 601
+                        min_samples_split: 427
+                        splitter: random
+                      _locked: {}
+                      _settings: <wandb.sdk.wandb_settings.Settings object at 0x00000203FFC2AB80>
+                      _users: {}
+                      _users_cnt: 0
+                      _users_inv: {}
+                      _wandb:
+                        cli_version: 0.10.12
+                        framework: sklearn
+                        is_jupyter_run: false
+                        is_kaggle_kernel: false
+                        python_version: 3.9.1
+                      class_weight: balanced
+                      criterion: entropy
+                      max_depth: 7
+                      max_features: 12
+                      min_samples_leaf: 650
+                      min_samples_split: 443
+                      splitter: random
+                    _locked: {}
+                    _settings: <wandb.sdk.wandb_settings.Settings object at 0x00000203807DC9A0>
+                    _users: {}
+                    _users_cnt: 0
+                    _users_inv: {}
+                    _wandb:
+                      cli_version: 0.10.12
+                      framework: sklearn
+                      is_jupyter_run: false
+                      is_kaggle_kernel: false
+                      python_version: 3.9.1
+                    class_weight: balanced
+                    criterion: gini
+                    max_depth: 4
+                    max_features: 38
+                    min_samples_leaf: 564
+                    min_samples_split: 307
+                    splitter: best
+                  _locked: {}
+                  _settings: <wandb.sdk.wandb_settings.Settings object at 0x00000203807EC100>
+                  _users: {}
+                  _users_cnt: 0
+                  _users_inv: {}
+                  _wandb:
+                    cli_version: 0.10.12
+                    framework: sklearn
+                    is_jupyter_run: false
+                    is_kaggle_kernel: false
+                    python_version: 3.9.1
+                  class_weight: balanced
+                  criterion: entropy
+                  max_depth: 3
+                  max_features: 22
+                  min_samples_leaf: 642
+                  min_samples_split: 54
+                  splitter: best
+                _locked: {}
+                _settings: <wandb.sdk.wandb_settings.Settings object at 0x0000020380804B80>
+                _users: {}
+                _users_cnt: 0
+                _users_inv: {}
+                _wandb:
+                  cli_version: 0.10.12
+                  framework: sklearn
+                  is_jupyter_run: false
+                  is_kaggle_kernel: false
+                  python_version: 3.9.1
+                class_weight: balanced
+                criterion: gini
+                max_depth: 4
+                max_features: 38
+                min_samples_leaf: 125
+                min_samples_split: 695
+                splitter: random
+              _locked: {}
+              _settings: <wandb.sdk.wandb_settings.Settings object at 0x000002038020CE80>
+              _users: {}
+              _users_cnt: 0
+              _users_inv: {}
+              _wandb:
+                cli_version: 0.10.12
+                framework: sklearn
+                is_jupyter_run: false
+                is_kaggle_kernel: false
+                python_version: 3.9.1
+              class_weight: balanced
+              criterion: entropy
+              max_depth: 3
+              max_features: 8
+              min_samples_leaf: 975
+              min_samples_split: 856
+              splitter: best
+            _locked: {}
+            _settings: <wandb.sdk.wandb_settings.Settings object at 0x00000203802234C0>
+            _users: {}
+            _users_cnt: 0
+            _users_inv: {}
+            _wandb:
+              cli_version: 0.10.12
+              framework: sklearn
+              is_jupyter_run: false
+              is_kaggle_kernel: false
+              python_version: 3.9.1
+            class_weight: balanced
+            criterion: gini
+            max_depth: 6
+            max_features: 31
+            min_samples_leaf: 618
+            min_samples_split: 179
+            splitter: random
+          _locked: {}
+          _settings: <wandb.sdk.wandb_settings.Settings object at 0x000002038080CCA0>
+          _users: {}
+          _users_cnt: 0
+          _users_inv: {}
+          _wandb:
+            cli_version: 0.10.12
+            framework: sklearn
+            is_jupyter_run: false
+            is_kaggle_kernel: false
+            python_version: 3.9.1
+          class_weight: balanced
+          criterion: gini
+          max_depth: 9
+          max_features: 29
+          min_samples_leaf: 227
+          min_samples_split: 278
+          splitter: best
+        _locked: {}
+        _settings: <wandb.sdk.wandb_settings.Settings object at 0x0000020380234A30>
+        _users: {}
+        _users_cnt: 0
+        _users_inv: {}
+        _wandb:
+          cli_version: 0.10.12
+          framework: sklearn
+          is_jupyter_run: false
+          is_kaggle_kernel: false
+          python_version: 3.9.1
+        class_weight: balanced
+        criterion: gini
+        max_depth: 5
+        max_features: 39
+        min_samples_leaf: 427
+        min_samples_split: 627
+        splitter: random
+      _locked: {}
+      _settings: <wandb.sdk.wandb_settings.Settings object at 0x0000020380804D90>
+      _users: {}
+      _users_cnt: 0
+      _users_inv: {}
+      _wandb:
+        cli_version: 0.10.12
+        framework: sklearn
+        is_jupyter_run: false
+        is_kaggle_kernel: false
+        python_version: 3.9.1
+      class_weight: balanced
+      criterion: entropy
+      max_depth: 6
+      max_features: 2
+      min_samples_leaf: 894
+      min_samples_split: 524
+      splitter: random
+    _locked: {}
+    _settings: <wandb.sdk.wandb_settings.Settings object at 0x000002038005BFA0>
+    _users: {}
+    _users_cnt: 0
+    _users_inv: {}
+    _wandb:
+      cli_version: 0.10.12
+      framework: sklearn
+      is_jupyter_run: false
+      is_kaggle_kernel: false
+      python_version: 3.9.1
+    class_weight: balanced
+    criterion: entropy
+    max_depth: 10
+    max_features: 26
+    min_samples_leaf: 963
+    min_samples_split: 718
+    splitter: best
+_locked:
+  desc: null
+  value: {}
+_settings:
+  desc: null
+  value: <wandb.sdk.wandb_settings.Settings object at 0x000002038005B940>
+_users:
+  desc: null
+  value: {}
+_users_cnt:
+  desc: null
+  value: 0
+_users_inv:
+  desc: null
+  value: {}
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.10.12
+    framework: sklearn
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    python_version: 3.9.1
+class_weight:
+  desc: null
+  value: balanced
+criterion:
+  desc: null
+  value: gini
+max_depth:
+  desc: null
+  value: 9
+max_features:
+  desc: null
+  value: 3
+min_samples_leaf:
+  desc: null
+  value: 22
+min_samples_split:
+  desc: null
+  value: 784
+splitter:
+  desc: null
+  value: best

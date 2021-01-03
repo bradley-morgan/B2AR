@@ -1,0 +1,22 @@
+{
+    "os": "Windows-10-10.0.18362-SP0",
+    "python": "3.9.1",
+    "heartbeatAt": "2021-01-02T13:37:55.825302",
+    "startedAt": "2021-01-02T13:37:52.671363",
+    "docker": null,
+    "cpu_count": 4,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "codePath": "activate.py",
+    "program": "C:\\Users\\BXM604\\Documents\\PhD\\B2AR\\activate.py",
+    "git": {
+        "remote": "https://github.com/bradley-morgan/B2AR.git",
+        "commit": "dfba2390057a372e5b4351dd0b1a932fc3f0a4eb"
+    },
+    "email": null,
+    "root": "C:/Users/BXM604/Documents/PhD/B2AR",
+    "host": "exam-09",
+    "username": "BXM604",
+    "executable": "C:\\Users\\BXM604\\Documents\\PhD\\B2AR\\b2ar-env\\Scripts\\python.exe"
+}

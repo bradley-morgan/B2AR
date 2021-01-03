@@ -2,7 +2,7 @@ orch:
   src: ./data/filtered
   project_name: placeholder
   cloud:
-    api_key: placeholder
+    api_key: 003bdcde0a7e623fdeb0425c3079a7aed09a32e6
   test_mode: True
   max_cores: 4
   max_gpus: 1
@@ -72,9 +72,9 @@ preprocessing:
 
 selection:
   sweep_src: ./sweep_configs
-  time_threshold: 4
+  timeout: 0.00277778
   performance_threshold: 0.85
-  parallelisation: single
+  parallelisation: multiprocessing
   output: best_performance
 
 variance:

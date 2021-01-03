@@ -20,6 +20,7 @@ class CrossValService:
         cross_val_conf_matrices = []
 
         for r in range(self.n_repeats):
+            r = 1 if r == 0 else r
 
             cv = StratifiedKFold(n_splits=self.k_folds, shuffle=True)
             for train_idx, test_idx in cv.split(self.data.x_train, self.data.y_train):

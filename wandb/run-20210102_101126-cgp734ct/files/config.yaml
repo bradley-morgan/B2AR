@@ -1,0 +1,31 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.10.12
+    framework: sklearn
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    python_version: 3.9.1
+class_weight:
+  desc: null
+  value: balanced
+criterion:
+  desc: null
+  value: entropy
+max_depth:
+  desc: null
+  value: 7
+max_features:
+  desc: null
+  value: 31
+min_samples_leaf:
+  desc: null
+  value: 776
+min_samples_split:
+  desc: null
+  value: 465
+splitter:
+  desc: null
+  value: random

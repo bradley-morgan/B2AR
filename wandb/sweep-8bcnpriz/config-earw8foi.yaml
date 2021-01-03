@@ -1,0 +1,16 @@
+wandb_version: 1
+
+class_weight:
+  value: balanced
+criterion:
+  value: gini
+max_depth:
+  value: 6
+max_features:
+  value: 29
+min_samples_leaf:
+  value: 356
+min_samples_split:
+  value: 551
+splitter:
+  value: random
