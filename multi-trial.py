@@ -2,7 +2,11 @@ from multiprocessing import Process, Queue, Pool, current_process, Event
 from tools.general_tools import Obj
 import time
 
-
+'''
+Example shows how the nested multiprocessing will work in the b2ar workflow.
+The parent process will init x processes that will each run a wandb sweep. Each sweep will then
+spawn a worker pool and parallel process the resampling methods.
+'''
 class ChildProcess:
     def __init__(self, timeout):
         self.timeout = timeout
@@ -17,27 +21,31 @@ class ParentProcess:
     def __init__(self, timeout):
         self.timeout = timeout
 
-    def run(self, job_q: Queue, out_q: Queue, is_killed_q: Queue, kill_e: Event):
-
+    def run(self, job_q: Queue, kill_e: Event, timeout_children: bool):
+        """
+        :param job_q: Queue with a task for the process to complete
+        :param kill_e: Event that triggers the process to kill its child process
+        :param timeout_children: If true if a sweep process(parent) process timesout then it will
+        immediatly timeout the child process pool. If false it will wait for the child process to finish then it
+        will terminate both children and parent processes
+        """
         j = job_q.get()
         data = j.data
 
         with Pool(processes=len(data)) as pool:
             print('Creating Child Process')
             child_p = ChildProcess(timeout=10)
-            start = time.time()
-            pipes = pool.map(child_p.run, data)
-            print(f'{current_process().name} time: {time.time() - start} val output: {pipes}')
 
-            # if kill_e.wait():
-            #     print('kill Children')
-            #     is_killed_q.put(True)
-            #     pool.terminate()
-        #
-        # pool.close()
-        # pool.join()
-        # out_q.put(pipes)
+            if not timeout_children:
+                start = time.time()
+                pipes = pool.map(child_p.run, data)
+                print(f'{current_process().name} time: {time.time() - start} val output: {pipes}')
+            else:
+                pipes = pool.map_async(child_p.run, data)
 
+                if kill_e.wait():
+                    print('kill Children')
+                    pool.terminate()
 
 if __name__ == '__main__':
 
@@ -56,13 +64,11 @@ if __name__ == '__main__':
         )
     ]
     job_q = Queue()
-    out_q = Queue()
-    kill_q = Queue()
     kill_event = Event()
     processes = []
     for i in range(len(jobs)):
         parent_p = ParentProcess(timeout=60)
-        p = Process(target=parent_p.run, args=(job_q, out_q, kill_q, kill_event))
+        p = Process(target=parent_p.run, args=(job_q, kill_event, False))
         p.daemon = False
         processes.append(p)
         p.start()
