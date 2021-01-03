@@ -72,7 +72,7 @@ preprocessing:
 
 selection:
   sweep_src: ./sweep_configs
-  timeout: 0.00277778
+  timeout: 0.00833333
   performance_threshold: 0.85
   parallelisation: multiprocessing
   output: best_performance

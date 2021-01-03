@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import tools.orchestration_tools as o_tools
 import tools.model_tools as m_tools
-from multiprocessing import Process, freeze_support
+from multiprocessing import Process, connection
 from tools.general_tools import Obj, required_config_params as rcp
 from services.Data import DataService
 from pipes.OptimPipe import OptimPipe
@@ -139,19 +139,23 @@ class ModelSelectionPipe:
             import time
             timeout = self.config[rcp.selection][rcp.timeout] * 3600
             processes = []
-            start = []
+
             for job in self.execution_chain:
                 pipe = OptimPipe(self.data, k_folds, n_repeats, job.sweep_config, job.model, project)
                 process = Process(target=pipe.run)
                 process.daemon = False
                 processes.append(process)
-                start.append(time.time())
                 process.start()
-                a = 0
 
-            for process, s in zip(processes, start):
-                process.join(timeout=timeout)
-                process.terminate()
-                end = time.time() - s
-                print(f'process timed out at: {end}')
+
+            start = time.time()
+            connection.wait([p.sentinel for p in processes], timeout=timeout)
+            print(f'process timed out at: {time.time() - start}')
+
+            # for process in processes:
+            #     start = time.time()
+            #     process.join(timeout=timeout)
+            #     end = time.time() - start
+            #     process.terminate()
+            #     print(f'process timed out at: {end}')
 

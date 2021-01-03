@@ -23,7 +23,6 @@ class OptimPipe:
             config=self.model.params,
             project=self.project
         )
-        self.run_obj = run_obj
         config = wandb.config
         self.model.params = config
 
@@ -35,8 +34,6 @@ class OptimPipe:
         run_obj.log({'mean_mcc': results.mean})
         # save run name to file
 
-    def terminate(self):
-        self.run_obj.finish()
 
     def run(self):
         sweep_id = wandb.sweep(sweep=self.sweep_config, project=self.project)
