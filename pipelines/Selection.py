@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import tools.orchestration_tools as o_tools
 import tools.model_tools as m_tools
-from multiprocessing import Process, connection
+from multiprocessing import Process, Queue, Event
 from tools.general_tools import Obj, required_config_params as rcp
 from services.Data import DataService
 from pipes.OptimPipe import OptimPipe
@@ -132,30 +132,17 @@ class ModelSelectionPipe:
 
         if parallelisation.lower() == rcp.single:
             for job in self.execution_chain:
-                p_out = OptimPipe(self.data, k_folds, n_repeats, job.sweep_config, job.model, project).run()
+                p_out = OptimPipe(
+                    self.data, k_folds, n_repeats,
+                    job.sweep_config, job.model, project,
+                    kill_event=None
+                ).run()
                 self.__update_exe_chain__(p_out)
 
         elif parallelisation.lower() == rcp.multiprocessing:
-            import time
-            timeout = self.config[rcp.selection][rcp.timeout] * 3600
+            cpus = o_tools.get_cpus(required_cores=len(self.execution_chain), max_cores=self.max_cores)
+            job_q = Queue()
+            kill_event = Event()
             processes = []
-
             for job in self.execution_chain:
-                pipe = OptimPipe(self.data, k_folds, n_repeats, job.sweep_config, job.model, project)
-                process = Process(target=pipe.run)
-                process.daemon = False
-                processes.append(process)
-                process.start()
-
-
-            start = time.time()
-            connection.wait([p.sentinel for p in processes], timeout=timeout)
-            print(f'process timed out at: {time.time() - start}')
-
-            # for process in processes:
-            #     start = time.time()
-            #     process.join(timeout=timeout)
-            #     end = time.time() - start
-            #     process.terminate()
-            #     print(f'process timed out at: {end}')
-
+                p_out = OptimPipe(self.data, k_folds, n_repeats, job.sweep_config, job.model, project)
