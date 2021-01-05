@@ -98,7 +98,8 @@ class Orchestrator:
 
             elif phase == rcp.phase2:
                 data = self.execution_chain.phase1.output.provide(self.config[rcp.preprocessing][rcp.output], 'int64')
-                self.execution_chain.phase2.output = phase_obj.pipe.execute(data)
+                self.execution_chain.phase2.pipe.feed(data)
+                self.execution_chain.phase2.output = phase_obj.pipe.execute()
 
             elif phase == rcp.phase3:
                 # TODO If phase 2 not provided then need to create a new model to feed to phase 3

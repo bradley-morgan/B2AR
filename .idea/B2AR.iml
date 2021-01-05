@@ -2,6 +2,8 @@
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/b2ar-env" />
+      <excludeFolder url="file://$MODULE_DIR$/venv" />
       <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_095915-g0hcx9yx/logs" />
       <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_100219-aj7igemg/logs" />
       <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_100325-kp6l3c1y/logs" />
@@ -146,6 +148,7 @@
       <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_125743-i9sqw7m2/logs" />
       <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_125753-84skqe56/logs" />
       <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_125759-4t3rz16h/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_125808-y0kr4z0d" />
       <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_125815-i7ajupg0/logs" />
       <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_125829-wyng98qj/logs" />
       <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_125843-3ji1iemh/logs" />
@@ -675,10 +678,9 @@
       <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_191749-ze564v17/logs" />
       <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_191757-vfl86d8z/logs" />
       <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_191800-910xmmf3/logs" />
-      <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_191816-2168eqaj/logs" />
-      <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_125808-y0kr4z0d" />
       <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_191803-efmtaz7w" />
       <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_191813-ed7qj3ym" />
+      <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_191816-2168eqaj/logs" />
       <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_195743-caouchz2" />
       <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_195756-azf9ty7i" />
       <excludeFolder url="file://$MODULE_DIR$/wandb/run-20210102_195800-n20jfne1" />
@@ -779,9 +781,8 @@
       <excludeFolder url="file://$MODULE_DIR$/wandb/sweep-xqoa4m1l" />
       <excludeFolder url="file://$MODULE_DIR$/wandb/sweep-xrnifwbs" />
       <excludeFolder url="file://$MODULE_DIR$/wandb/sweep-zc05xpy2" />
-      <excludeFolder url="file://$MODULE_DIR$/b2ar-env" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.9 (B2AR)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.8 (B2AR-env)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

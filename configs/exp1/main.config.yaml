@@ -72,9 +72,10 @@ preprocessing:
 
 selection:
   sweep_src: ./sweep_configs
-  timeout: 0.00833333
   performance_threshold: 0.85
-  parallelisation: single
+  parallelisation:
+    timeout: 0.00555556
+    mode: single
   output: best_performance
 
 variance:
@@ -102,7 +103,7 @@ repeats:
 
 validation:
   k_folds: 10
-  n_repeats: auto
+  n_repeats: 1
   parallelisation: single
 
 uncertainty:

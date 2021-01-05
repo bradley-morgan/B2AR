@@ -22,7 +22,6 @@ class Obj:
         a = self.__dict__.items()
         return a
 
-
     def exist(self, item):
         return self.__dict__.get(item) is not None
 
@@ -38,6 +37,7 @@ class Obj:
 
     def to_list(self):
         return list(self.iter())
+
     def to_dataframe(self, orient: str, columns=None):
         """
         Converts Anonymous object to a pandas dataframe
@@ -85,13 +85,15 @@ required_config_params = Obj(
     parallelisation='parallelisation',
     single='single',
     multiprocessing='multiprocessing',
+    mode='mode',
+    timeout='timeout',
+    timeout_children='timeout_children',
     precision='precision',
     min='min',
     max='max',
     k_folds='k_folds',
     n_repeats='n_repeats',
     sweep_src='sweep_src',
-    timeout='timeout',
     performance_threshold='performance_threshold',
     correlation='correlation',
     target_name='target_name',
@@ -110,5 +112,6 @@ required_config_params = Obj(
     value='value',
     name='name',
     apply_to='apply_to',
-    item='item'
+    item='item',
+    kill_event='kill_event'
 )

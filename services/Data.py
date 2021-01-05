@@ -28,12 +28,16 @@ class DataService:
         self.config = config
         self.datasets = {}
 
+    def get_dirs(self, path):
+        return  [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
+
+    def get_file_type(self, path, file_extension):
+        return [file for file in os.listdir(path) if file.endswith('.csv')]
+
     def load(self):
         src = g_tools.path(self.config[rcp.orch][rcp.src])
-        for sub_folder in os.listdir(src):
-            sub_file_list = os.listdir(os.path.join(src, sub_folder))
-            sub_file_list = [file for file in sub_file_list if file.endswith('.csv')]
-            for file in sub_file_list:
+        for sub_folder in self.get_dirs(src):
+            for file in self.get_file_type(os.path.join(src, sub_folder), '.csv'):
                 data = pd.read_csv(os.path.join(src, sub_folder, file))
                 dataset_name = f'{sub_folder}-{file.split(".")[0]}'
                 self.datasets[dataset_name] = {rcp.data: data}

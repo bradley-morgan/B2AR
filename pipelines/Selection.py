@@ -7,11 +7,12 @@ from tools.general_tools import Obj, required_config_params as rcp
 from services.Data import DataService
 from pipes.OptimPipe import OptimPipe
 import wandb
+import time
 
 
 class ModelSelectionPipe:
 
-    def __init__(self, config: Obj, max_cores: int, max_gpus: int):
+    def __init__(self, config: dict, max_cores: int, max_gpus: int):
 
         self.max_cores = max_cores
         self.max_gpus = max_gpus
@@ -83,12 +84,19 @@ class ModelSelectionPipe:
 
             test_mode = self.config[rcp.orch][rcp.test_mode]
             model = m_tools.MakeModel(model_name, default_config, test_mode)
+            project = self.config[rcp.orch][rcp.project_name]
+            k_folds = self.config[rcp.validation][rcp.k_folds]
+            n_repeats = self.config[rcp.validation][rcp.n_repeats]
+
             chain.append(
                 Obj(
                     id=idx,
                     model=model,
                     sweep_config=sweep_config,
                     default_config=default_config,
+                    project=project,
+                    k_folds=k_folds,
+                    n_repeats=n_repeats,
                     output=None,
                     error=None,
                 )
@@ -100,14 +108,13 @@ class ModelSelectionPipe:
 
         self.execution_chain = chain
 
-    def __update_exe_chain__(self, p_out: Obj):
-        self.execution_chain[p_out.id].output = p_out.output
-        self.execution_chain[p_out.id].status = p_out.status
-        self.execution_chain[p_out.id].error = p_out.error
-
-    def execute(self, data: pd.DataFrame):
+    def feed(self, data: pd.DataFrame):
+        # Feed functions defines the pipeline input dependencies
         self.data = data
 
+
+
+    def execute(self):
         # Each pipe needs to parallise the execution chain, join the results and the return the new pipeline
         self.execution_chain = self.execute_repeat_estimation()
         self.execution_chain = self.execute_optimization()
@@ -125,24 +132,36 @@ class ModelSelectionPipe:
 
     def execute_optimization(self):
 
-        parallelisation = self.config[rcp.selection][rcp.parallelisation]
-        project = self.config[rcp.orch][rcp.project_name]
-        k_folds = self.config[rcp.validation][rcp.k_folds]
-        n_repeats = self.config[rcp.validation][rcp.n_repeats]
+        # TODO Implement Queue for Processes. get_cores used to spin up x processes then use queue to feed the
+        # execution chain to the Process that will activate when data gets added to the queue.
 
-        if parallelisation.lower() == rcp.single:
+        timeout = self.config[rcp.selection][rcp.parallelisation][rcp.timeout]
+        mode = self.config[rcp.selection][rcp.parallelisation][rcp.mode]
+        cores = o_tools.get_cores(required_cores=len(self.execution_chain), max_cores=self.max_cores)
+
+        if mode.lower() == rcp.single:
             for job in self.execution_chain:
-                p_out = OptimPipe(
-                    self.data, k_folds, n_repeats,
-                    job.sweep_config, job.model, project,
-                    kill_event=None
-                ).run()
-                self.__update_exe_chain__(p_out)
+                job(data=self.data, max_cores=self.max_cores)
+                p_out = OptimPipe(job).run()
+                # self.__update_exe_chain__(p_out)
 
-        elif parallelisation.lower() == rcp.multiprocessing:
-            cpus = o_tools.get_cpus(required_cores=len(self.execution_chain), max_cores=self.max_cores)
-            job_q = Queue()
-            kill_event = Event()
+        elif mode.lower() == rcp.multiprocessing:
             processes = []
             for job in self.execution_chain:
-                p_out = OptimPipe(self.data, k_folds, n_repeats, job.sweep_config, job.model, project)
+                job(
+                    data=self.data,
+                    cores=self.max_cores,
+                )
+                p_out = OptimPipe(job)
+                p = Process(target=p_out.run)
+                p.daemon = False
+                processes.append(p)
+                p.start()
+
+            time.sleep(timeout)
+            for p in processes:
+                p.join()
+
+
+
+

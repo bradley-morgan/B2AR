@@ -4,7 +4,7 @@ import yaml
 # ==================================== TODO FUNCTIONS ==================================================================
 
 
-def get_cpus(required_cores, max_cores=-1):
+def get_cores(required_cores, max_cores=-1):
     total_cores = os.cpu_count()
 
     if max_cores == -1:

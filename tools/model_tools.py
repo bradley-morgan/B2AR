@@ -26,19 +26,19 @@ def get_model_performance(y_true, y_preds):
 
 class MakeModel:
 
-    def __init__(self, model: str, params: dict, test_mode: bool):
+    def __init__(self, model_type: str, params: dict, test_mode: bool):
 
-        self.model = model
+        self.model_type = model_type
         self.params = params
         self.test_mode = test_mode
 
     def make(self):
-        if 'decision tree' == self.model.lower() or 'decision_tree' or self.model.lower() \
-                or 'd_tree' == self.model.lower() or 'd tree' == self.model.lower() or 'dt' == self.model.lower():
+        if 'decision tree' == self.model_type.lower() or 'decision_tree' or self.model_type.lower() \
+                or 'd_tree' == self.model_type.lower() or 'd tree' == self.model_type.lower() or 'dt' == self.model_type.lower():
 
             return self.is_test(DecisionTreeClassifier)
 
-        raise ValueError(f'Make Model Function detected an invalid model type {self.model}')
+        raise ValueError(f'Make Model Function detected an invalid model type {self.model_type}')
 
     def is_test(self, model):
         if self.test_mode:

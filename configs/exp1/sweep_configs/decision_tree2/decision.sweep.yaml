@@ -1,4 +1,3 @@
-program: cross_validation.py
 model: decision_tree
 description: Decision Tree Sweep Test
 method: bayes

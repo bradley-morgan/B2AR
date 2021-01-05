@@ -21,7 +21,7 @@ class ParentProcess:
     def __init__(self, timeout):
         self.timeout = timeout
 
-    def run(self, job_q: Queue, kill_e: Event, timeout_children: bool):
+    def run(self, job_q: Queue, kill_self: Event, timeout_children: bool):
         """
         :param job_q: Queue with a task for the process to complete
         :param kill_e: Event that triggers the process to kill its child process
@@ -38,14 +38,16 @@ class ParentProcess:
 
             if not timeout_children:
                 start = time.time()
-                pipes = pool.map(child_p.run, data)
-                print(f'{current_process().name} time: {time.time() - start} val output: {pipes}')
+                results = pool.map(child_p.run, data)
+                print(f'{current_process().name} time: {time.time() - start} val output: {results}')
             else:
-                pipes = pool.map_async(child_p.run, data)
+                results = pool.map_async(child_p.run, data)
 
-                if kill_e.wait():
+                if kill_self.wait():
                     print('kill Children')
                     pool.terminate()
+
+                print(f'{current_process().name}  val output: {results.get()}')
 
 if __name__ == '__main__':
 
