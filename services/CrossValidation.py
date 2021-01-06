@@ -4,6 +4,7 @@ from tools.model_tools import get_model_performance
 import tools.model_tools as m_tools
 from multiprocessing import Pool, Queue, Process, current_process
 import tools.orchestration_tools as o_tools
+import wandb
 
 
 def generate(data: Obj, model, k_folds: int, n_repeats: int):
@@ -37,7 +38,7 @@ def execute(fold):
     return cross_val_scores
 
 
-def run(data, k_folds, n_repeats, model, max_cores):
+def run(data, k_folds, n_repeats, model, max_cores, kill_self):
     # Cross validation
 
     k_folds = generate(data, model, k_folds, n_repeats)
@@ -45,12 +46,22 @@ def run(data, k_folds, n_repeats, model, max_cores):
 
     with Pool(processes=cores) as pool:
         results = pool.map(execute, k_folds)
-        return results
+
+    print('Pool Terminated')
+    return results
 
 
+def format_output(data: list):
+    conf_mat = []
+    mcc_score = []
+    for obj in data:
+        conf_mat.append(obj.conf_mat)
+        mcc_score.append(obj.mcc_score)
 
-def get_descriptives(self):
-    return m_tools.get_descriptive_stats(self.results.cross_val_mcc_scores)
+    return Obj(
+        conf_mat=conf_mat,
+        mcc_score=mcc_score
+    )
 
 
 

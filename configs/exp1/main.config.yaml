@@ -4,7 +4,7 @@ orch:
   cloud:
     api_key: 003bdcde0a7e623fdeb0425c3079a7aed09a32e6
   test_mode: True
-  max_cores: 4
+  max_cores: 3
   max_gpus: 1
   phases:
     phase3:
@@ -74,8 +74,8 @@ selection:
   sweep_src: ./sweep_configs
   performance_threshold: 0.85
   parallelisation:
-    timeout: 0.00555556
-    mode: single
+    timeout: 0.0166667
+    mode: multiprocessing
   output: best_performance
 
 variance:

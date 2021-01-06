@@ -134,33 +134,69 @@ class ModelSelectionPipe:
 
         # TODO Implement Queue for Processes. get_cores used to spin up x processes then use queue to feed the
         # execution chain to the Process that will activate when data gets added to the queue.
+        # TODO Check that Multi-sweep cross-validation works
+        # TODO test cross validation make sure multiprocessing is faster than synchronous cross val
 
-        timeout = self.config[rcp.selection][rcp.parallelisation][rcp.timeout]
+        timeout = self.config[rcp.selection][rcp.parallelisation][rcp.timeout] * 3600
         mode = self.config[rcp.selection][rcp.parallelisation][rcp.mode]
         cores = o_tools.get_cores(required_cores=len(self.execution_chain), max_cores=self.max_cores)
 
         if mode.lower() == rcp.single:
             for job in self.execution_chain:
                 job(data=self.data, max_cores=self.max_cores)
-                p_out = OptimPipe(job).run()
+                p_out = OptimPipe()
+                p_out.init_job(job)
+                p_out.run()
                 # self.__update_exe_chain__(p_out)
 
         elif mode.lower() == rcp.multiprocessing:
+            job_q = Queue()
+            exit_q = Queue()
             processes = []
-            for job in self.execution_chain:
-                job(
-                    data=self.data,
-                    cores=self.max_cores,
-                )
-                p_out = OptimPipe(job)
-                p = Process(target=p_out.run)
+            kill_children = Event()
+            safe_exit = Event()
+            for _ in range(cores):
+                p_out = OptimPipe()
+                p = Process(target=p_out.run, args=(job_q, kill_children, exit_q))
                 p.daemon = False
                 processes.append(p)
                 p.start()
 
+            for job in self.execution_chain:
+                job(
+                    data=self.data,
+                    max_cores=self.max_cores,
+                )
+                job_q.put(job)
+
+            s = time.time()
             time.sleep(timeout)
-            for p in processes:
-                p.join()
+            print(f'TIMEOUT SWEEPS at {time.time() - s}')
+            kill_children.set()
+            print('Waiting for Child Processes to Finish')
+            exit_array = []
+            exit_flag = False
+            while not exit_flag:
+                while not exit_q.empty():
+                    o = exit_q.get()
+                    exit_array.append(o)
+
+                if len(exit_array) == len(processes):
+                    exit_flag = True
+
+            if len(exit_array) == len(processes) and all(exit_array):
+                safe_exit.set()
+
+            exit_q.close()
+            job_q.close()
+            if safe_exit.wait():
+                for p in processes:
+                    p.terminate()
+                    print('Sweep Terminated')
+
+                print('Sweep Processing Complete')
+                time.sleep(10)
+                print('End Program')
 
 
 

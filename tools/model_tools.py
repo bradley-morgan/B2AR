@@ -3,6 +3,26 @@ from sklearn.metrics import matthews_corrcoef, accuracy_score, confusion_matrix
 from tools.general_tools import Obj
 import numpy as np
 from scipy.stats import sem
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+
+def get_median_confusion_matrix(conf_mat: list):
+    mat = np.asarray(conf_mat)
+    median_confusion_matrix = np.median(mat, axis=0)
+    return median_confusion_matrix.astype('int64')
+
+
+def plot_confusion_matrix(conf_mat):
+    ax = sns.heatmap(conf_mat,
+                     annot=True,
+                     cbar=False,
+                     fmt='d')
+    plt.xlabel("True Label")
+    plt.ylabel("Predicted Label")
+    plt.close(ax.get_figure())
+    plot = ax.get_figure()
+    return plot
 
 
 def get_descriptive_stats(scores):
