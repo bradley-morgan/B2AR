@@ -133,3 +133,6 @@ dmypy.json
 
 # wanb
 /wandb
+
+# tmp folder created by imageSaver
+/tmp

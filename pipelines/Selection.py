@@ -12,10 +12,9 @@ import time
 
 class ModelSelectionPipe:
 
-    def __init__(self, config: dict, max_cores: int, max_gpus: int):
+    def __init__(self, config: dict, max_cores: int):
 
         self.max_cores = max_cores
-        self.max_gpus = max_gpus
         self.config = config
 
         self.execution_chain = []
@@ -112,8 +111,6 @@ class ModelSelectionPipe:
         # Feed functions defines the pipeline input dependencies
         self.data = data
 
-
-
     def execute(self):
         # Each pipe needs to parallise the execution chain, join the results and the return the new pipeline
         self.execution_chain = self.execute_repeat_estimation()
@@ -132,9 +129,6 @@ class ModelSelectionPipe:
 
     def execute_optimization(self):
 
-        # TODO Implement Queue for Processes. get_cores used to spin up x processes then use queue to feed the
-        # execution chain to the Process that will activate when data gets added to the queue.
-        # TODO Check that Multi-sweep cross-validation works
         # TODO test cross validation make sure multiprocessing is faster than synchronous cross val
 
         timeout = self.config[rcp.selection][rcp.parallelisation][rcp.timeout] * 3600
@@ -143,18 +137,16 @@ class ModelSelectionPipe:
 
         if mode.lower() == rcp.single:
             for job in self.execution_chain:
-                job(data=self.data, max_cores=self.max_cores)
+                job(data=self.data, max_cores=self.config[rcp.validation][rcp.parallelisation][rcp.max_cores])
                 p_out = OptimPipe()
-                p_out.init_job(job)
+                p_out.init_job(job, None, None)
                 p_out.run()
-                # self.__update_exe_chain__(p_out)
 
         elif mode.lower() == rcp.multiprocessing:
             job_q = Queue()
             exit_q = Queue()
             processes = []
             kill_children = Event()
-            safe_exit = Event()
             for _ in range(cores):
                 p_out = OptimPipe()
                 p = Process(target=p_out.run, args=(job_q, kill_children, exit_q))
@@ -165,7 +157,7 @@ class ModelSelectionPipe:
             for job in self.execution_chain:
                 job(
                     data=self.data,
-                    max_cores=self.max_cores,
+                    max_cores=self.config[rcp.validation][rcp.parallelisation][rcp.max_cores],
                 )
                 job_q.put(job)
 
@@ -184,19 +176,14 @@ class ModelSelectionPipe:
                 if len(exit_array) == len(processes):
                     exit_flag = True
 
-            if len(exit_array) == len(processes) and all(exit_array):
-                safe_exit.set()
-
             exit_q.close()
             job_q.close()
-            if safe_exit.wait():
-                for p in processes:
-                    p.terminate()
-                    print('Sweep Terminated')
+            for p in processes:
+                p.terminate()
+                print('Sweep Terminated')
 
-                print('Sweep Processing Complete')
-                time.sleep(10)
-                print('End Program')
+            print('Model Selection Pipeline Processing Complete')
+            print('End Program')
 
 
 

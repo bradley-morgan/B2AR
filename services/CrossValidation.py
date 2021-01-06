@@ -38,7 +38,7 @@ def execute(fold):
     return cross_val_scores
 
 
-def run(data, k_folds, n_repeats, model, max_cores, kill_self):
+def run(data, k_folds, n_repeats, model, max_cores):
     # Cross validation
 
     k_folds = generate(data, model, k_folds, n_repeats)

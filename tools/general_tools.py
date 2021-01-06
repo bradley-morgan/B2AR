@@ -58,7 +58,7 @@ class ImageSaver:
 
     def __init__(self, run):
         matplotlib.use('Agg')
-        self.save_dir = path('../tmp')
+        self.save_dir = path('./tmp')
         self.run = run
 
         if not os.path.isdir(self.save_dir):
@@ -67,12 +67,11 @@ class ImageSaver:
         self.clean_up()
 
     def save(self, plot, name: str, format: str):
-
+        print(f'Image Saver: {name}')
         save_path = os.path.join(self.save_dir, f'{name}.{format}')
         #TODO This needs Testing
         plot.savefig(save_path, format=format, dpi=300)
         self.run.log({name: wandb.Image(save_path)})
-        self.clean_up()
 
     def save_graphviz(self, model: tree.DecisionTreeClassifier,
                       feature_names: list,

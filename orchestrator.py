@@ -53,15 +53,14 @@ class Orchestrator:
         chain = Obj()
         chain(phase1=Obj(pipe=DataPreprocessingPipe(self.config), output=None))
 
-        max_cores = self.config[rcp.orch][rcp.max_cores]
-        max_gpus = self.config[rcp.orch][rcp.max_gpus]
+        max_cores = self.config[rcp.selection][rcp.parallelisation][rcp.max_cores]
         for phase in self.config.get(rcp.orch).get(rcp.phases).keys():
             phase_config = self.config[rcp.orch][rcp.phases][phase]
             if phase == rcp.phase2:
                 if not phase_config.get('active'):
                     continue
 
-                pipe = ModelSelectionPipe(self.config, max_cores, max_gpus)
+                pipe = ModelSelectionPipe(self.config, max_cores)
                 chain(phase2=Obj(pipe=pipe, output=None))
 
             elif phase == rcp.phase3:
