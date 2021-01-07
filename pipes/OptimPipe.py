@@ -82,7 +82,7 @@ class OptimPipe:
         )
         # save run name to file
 
-    def run(self, job_q: Queue = None, kill_event: Event = None, exit_q: Queue = None):
+    def pipe(self, job_q: Queue = None, kill_event: Event = None, exit_q: Queue = None):
 
         if job_q is not None:
             job = job_q.get()

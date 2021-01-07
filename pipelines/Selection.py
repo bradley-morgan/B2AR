@@ -2,12 +2,12 @@ import os
 import pandas as pd
 import tools.orchestration_tools as o_tools
 import tools.model_tools as m_tools
-from multiprocessing import Process, Queue, Event
+import multiprocessing as mp
 from tools.general_tools import Obj, required_config_params as rcp
-from services.Data import DataService
 from pipes.OptimPipe import OptimPipe
-import wandb
+import pipes.VariancePipe as VarPipe
 import time
+import queue as sync_q
 
 
 class ModelSelectionPipe:
@@ -83,19 +83,35 @@ class ModelSelectionPipe:
 
             test_mode = self.config[rcp.orch][rcp.test_mode]
             model = m_tools.MakeModel(model_name, default_config, test_mode)
-            project = self.config[rcp.orch][rcp.project_name]
-            k_folds = self.config[rcp.validation][rcp.k_folds]
-            n_repeats = self.config[rcp.validation][rcp.n_repeats]
+            top_level = Obj(
+                id=idx,
+                test_mode=test_mode,
+                model=model,
+                project=self.config[rcp.orch][rcp.project_name]
+            )
+
+            variance = Obj(
+                y_true_name=self.config[rcp.variance][rcp.y_true_name],
+                test_repeats=self.config[rcp.variance][rcp.test_repeats],
+                n_samples=self.config[rcp.variance][rcp.n_samples],
+                variance_output=self.config[rcp.variance][rcp.variance_output],
+                precision_min=self.config[rcp.variance][rcp.precision][rcp.min],
+                precision_max=self.config[rcp.variance][rcp.precision][rcp.max],
+                repeats_output=self.config[rcp.variance][rcp.repeats_output]
+            )
+
+            validation = Obj(
+                sweep_config=sweep_config,
+                default_config=default_config,
+                k_folds=self.config[rcp.validation][rcp.k_folds],
+                n_repeats=self.config[rcp.validation][rcp.n_repeats]
+            )
 
             chain.append(
                 Obj(
-                    id=idx,
-                    model=model,
-                    sweep_config=sweep_config,
-                    default_config=default_config,
-                    project=project,
-                    k_folds=k_folds,
-                    n_repeats=n_repeats,
+                    top_level=top_level,
+                    variance=variance,
+                    validation=validation,
                     output=None,
                     error=None,
                 )
@@ -106,6 +122,9 @@ class ModelSelectionPipe:
                              'The pipeline has nothing to compute')
 
         self.execution_chain = chain
+
+    def config_storage_space(self):
+        pass
 
     def feed(self, data: pd.DataFrame):
         # Feed functions defines the pipeline input dependencies
@@ -121,12 +140,25 @@ class ModelSelectionPipe:
 
     def execute_repeat_estimation(self):
 
-        return self.execution_chain
-        # TODO variance estimation
-        # TODO repeats estimation
-        # TODO optimisation
-        # TODO cross validation
+        job_q = sync_q.Queue()
+        for job in self.execution_chain:
+            formatted_job = Obj(
+                **job.top_level.to_dict(),
+                **job.variance.to_dict(),
+                data=self.data,
+                max_cores=self.config[rcp.validation][rcp.parallelisation][rcp.max_cores]
+            )
+            job_q.put(formatted_job)
 
+        while not job_q.empty():
+            var_out = VarPipe.pipe(job_q)
+
+
+    # TODO variance estimation
+    # TODO repeats estimation
+    # TODO optimisation
+    # TODO cross validation
+    # TODO Add tagging to pipes
     def execute_optimization(self):
 
         # TODO test cross validation make sure multiprocessing is faster than synchronous cross val
@@ -137,29 +169,36 @@ class ModelSelectionPipe:
 
         if mode.lower() == rcp.single:
             for job in self.execution_chain:
-                job(data=self.data, max_cores=self.config[rcp.validation][rcp.parallelisation][rcp.max_cores])
+                formatted_job = Obj(
+                    **job.top_level.to_dict(),
+                    **job.validation.to_dict(),
+                    data=self.data,
+                    max_cores=self.config[rcp.validation][rcp.parallelisation][rcp.max_cores]
+                )
                 p_out = OptimPipe()
-                p_out.init_job(job, None, None)
-                p_out.run()
+                p_out.init_job(formatted_job, None, None)
+                p_out.pipe()
 
         elif mode.lower() == rcp.multiprocessing:
-            job_q = Queue()
-            exit_q = Queue()
+            job_q = mp.Queue()
+            exit_q = mp.Queue()
             processes = []
-            kill_children = Event()
+            kill_children = mp.Event()
             for _ in range(cores):
                 p_out = OptimPipe()
-                p = Process(target=p_out.run, args=(job_q, kill_children, exit_q))
+                p = mp.Process(target=p_out.pipe, args=(job_q, kill_children, exit_q))
                 p.daemon = False
                 processes.append(p)
                 p.start()
 
             for job in self.execution_chain:
-                job(
+                formatted_job = Obj(
+                    **job.top_level.to_dict(),
+                    **job.validation.to_dict(),
                     data=self.data,
-                    max_cores=self.config[rcp.validation][rcp.parallelisation][rcp.max_cores],
+                    max_cores=self.config[rcp.validation][rcp.parallelisation][rcp.max_cores]
                 )
-                job_q.put(job)
+                job_q.put(formatted_job)
 
             s = time.time()
             time.sleep(timeout)
@@ -184,6 +223,9 @@ class ModelSelectionPipe:
 
             print('Model Selection Pipeline Processing Complete')
             print('End Program')
+
+    def extract_best_model(self):
+        pass
 
 
 

@@ -173,5 +173,8 @@ required_config_params = Obj(
     name='name',
     apply_to='apply_to',
     item='item',
-    kill_event='kill_event'
+    kill_event='kill_event',
+    y_true_name='y_true_name',
+    variance_output='variance_output',
+    repeats_output='repeats_output',
 )

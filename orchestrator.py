@@ -49,7 +49,6 @@ class Orchestrator:
         if not any(matched):
             raise KeyError(f'This pipeline detected no valid phase name please add phases 2-4 configurations')
 
-
         chain = Obj()
         chain(phase1=Obj(pipe=DataPreprocessingPipe(self.config), output=None))
 

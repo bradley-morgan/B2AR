@@ -72,7 +72,7 @@ selection:
   sweep_src: ./sweep_configs
   performance_threshold: 0.85
   parallelisation:
-    timeout: 0.0833333
+    timeout: 0.0166667
     mode: multiprocessing
     max_cores: 3
   output: best_performance
@@ -87,30 +87,22 @@ validation:
 
 
 variance:
+  y_true_name: Action
   test_repeats:
     - 3
     - 5
     - 10
     - 20
-
   n_samples: 1.0
-  time:
-    units: mins
-    threshold: None
-  std_threshold: None
-  output: lowest-standard-error
-  parallelisation: single
-
-repeats:
   precision:
     min: 0.01
     max: 0.001
-  n_samples: 1.0
-  output: lowest-precision
   parallelisation:
     mode: multiprocessing
     max_cores: 3
     max_gpus: 1
+  variance_output: lowest-standard-error
+  repeats_output: lowest-precision
 
 uncertainty:
    n_repeats: auto
